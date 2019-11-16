@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="Get-customer-Object" doc:id="eead59ae-398d-4aa5-a1ed-f9324cc0f62e" >
+		<salesforce:query doc:name="Query" doc:id="a83a7d04-f7ea-4af5-8f4d-62a780fcee25" config-ref="Salesforce_Config1">
+			<salesforce:salesforce-query >SELECT Name,customer_id__c,customer_city__c,	Customer_choice__c  from  Customer__c</salesforce:salesforce-query>
+		</salesforce:query>
+		<ee:transform doc:name="Transform Message" doc:id="5a1860a2-4fba-4767-a549-dc6deb3d73e4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="customer_api_implementationFlow" doc:id="611f6807-381d-4204-a8af-debc373ca6b1" >
+		<ee:transform doc:name="Transform Message" doc:id="d9741fe4-86fe-4b3f-bab5-52bda133349f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:update doc:name="Update" doc:id="7922d4d2-2ae1-4797-b242-156139bccc8c" config-ref="Salesforce_Config1" type="Customer__c"/>
+	</flow>
+	<flow name="create-Object-Customer" doc:id="3f4032d2-714a-405b-acaa-cb3f1940cafe" >
+		<ee:transform doc:name="Transform Message" doc:id="f5ac4dc2-e121-41a4-a2b1-a8a91fde1846" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+[{
+    Name: payload.Name,
+    customer_id__c: payload.customer_id__c,
+    customer_city__c: payload.customer_city__c,
+    Customer_choice__c: payload.Customer_choice__c
+}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:create type="Customer__c" doc:name="Create" doc:id="58d9a079-c200-4f4e-bee6-03077408ceae" config-ref="Salesforce_Config1"/>
+	</flow>
+</mule>

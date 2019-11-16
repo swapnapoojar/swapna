@@ -1,0 +1,36 @@
+#%RAML 1.0
+title: lazy-fashion
+/customer:
+ description: Retrieve data from salesforce
+ get:
+   responses:
+     200:
+       body:
+         application/json:
+           example:
+             {
+               "id" : "1",
+               "name" : "John",
+               "city" : "Pune"
+             }
+ post:
+   body:
+     application/json:
+       example:
+         {
+          "id" : "1",
+           "name" : "John",
+           "city" : "Pune"
+         }
+/{id}:
+ put:
+   responses:
+     202:
+       body:
+         application/json:
+           example:
+             {
+               "id":"1",
+               "name" : "John",
+               "city" : "Pune"
+            }
